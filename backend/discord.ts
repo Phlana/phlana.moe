@@ -3,26 +3,10 @@ import axios from 'axios';
 import * as config from './config.json';
 import { APIGuild } from 'discord-api-types/v10';
 
-// declare var config
-//     env: {
-//         PORT: string;
-//         DISCORD_CLIENT_ID: string;
-//         DISCORD_CLIENT_SECRET: string;
-//         DISCORD_OAUTH_URL: string;
-//         DISCORD_SERVER_ID: string;
-//         DISCORD_REDIRECT: string;
-//     }
-// }
-
 const router = express.Router();
 
-router.get('/login', (req, res) => {
-    console.log('discord login page');
-    res.redirect(config.discord_oauth_url);
-});
-
-// redirect landing from discord oauth login
-router.get('/auth/discord', async (req, res) => {
+// get user information from discord oauth returned code
+router.get('/getDiscordInformation', async (req, res) => {
     const code = req.query.code;
     const params = new URLSearchParams();
     
@@ -39,11 +23,11 @@ router.get('/auth/discord', async (req, res) => {
         const headers = { Authorization: `${token_type} ${access_token}` };
 
         // getting user information
-        const userDataResponse = await axios.get('http://discord.com/api/v6/users/@me', { headers });
+        const userDataResponse = await axios.get('http://discord.com/api/users/@me', { headers });
         // console.log('fetched discord user information ', userDataResponse.data);
 
         // geting guild (server) status
-        const guildDataResponse = await axios.get('https://discord.com/api/v6/users/@me/guilds', { headers })
+        const guildDataResponse = await axios.get('https://discord.com/api/users/@me/guilds', { headers })
         // console.log('fetched discord guilds information', guildDataResponse.data);
         // console.log(guildDataResponse.data.find(guild => guild.id == config.discord_server_id.toString()));
 
@@ -61,7 +45,7 @@ router.get('/auth/discord', async (req, res) => {
         return res.json(user);
     }
     catch (error) {
-        console.log('unauthorized', error);
+        console.error('unauthorized', error);
         return res.json('unauthorized');
     }
 });
