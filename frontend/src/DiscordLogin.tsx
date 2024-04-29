@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "./AuthContext";
 
 type UserInfoType = {
     username: string;
@@ -8,21 +9,35 @@ type UserInfoType = {
     valid: boolean;
 };
 
+type DiscordValidationType = {
+    token: string;
+    username: string;
+    avatar: string;
+    valid: boolean;
+    profile: any;
+}
+
 const DiscordLogin = () => {
+    const { setToken } = useContext(AuthContext);
     const [searchParams, setSearchParams] = useSearchParams();
-    const [code, setCode] = useState<string>('');
+    const [code, setCode] = useState<string>();
     const [userInfo, setUserInfo] = useState<UserInfoType>();
+    const [profile, setProfile] = useState<any>();
 
     useEffect(() => {
         if (code) return;
         const responseCode = searchParams.get('code') || '';
         setCode(responseCode);
-        axios({
+        axios<DiscordValidationType>({
             method: 'get',
-            url: '/getDiscordInformation?code=' + responseCode,
+            url: '/api/discordValidate?code=' + responseCode,
         }).then(response => {
-            // console.log(response.data);
-            setUserInfo(response.data);
+            var { token, username, avatar, valid, profile } = response.data;
+            console.log(response.data);
+
+            setToken(token);            
+            setUserInfo({ username, avatar, valid });
+            setProfile(profile);
         })
     }, []);
 
@@ -30,25 +45,27 @@ const DiscordLogin = () => {
         <div>
             { userInfo && <div>
                 <div>
-                    you have been successfully logged in
-                </div>
-                <div>
-                    your code is {code}
+                    <img src={userInfo.avatar}></img>
                 </div>
                 <div>
                     hi { userInfo.username }
                 </div>
                 <div>
-                    <img src={userInfo.avatar}></img>
+                    { userInfo.valid ? "valid" : "invalid" }
                 </div>
                 <div>
-                    valid: { userInfo.valid }
+                    <Link to={"/quotelist"}>go to quote list</Link>
                 </div>
-                <Link to={"/quotelist"}>go to quote list</Link>
+                <div>
+                    <Link to={"/"}>home</Link>
+                </div>
             </div> }
             { !userInfo && <div>
                 <div>
                     failed to log in
+                </div>
+                <div>
+                    <Link to={"/"}>home</Link>
                 </div>
             </div>}
         </div>

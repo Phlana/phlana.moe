@@ -6,11 +6,21 @@ import { Quote as QuoteType } from './model/mongoTypes';
 const QuoteList = () => {
     const [quotes, setQuotes] = useState<QuoteType[]>([]);
 
+    const debugPrintAttachments = (quotes: QuoteType[]) => {
+        for (var quote of quotes) {
+            if (quote.attachments.length > 0) {
+                console.log(quote);
+            }
+        }
+    }
+
     useEffect(() => {
         axios.request({
             method: 'get',
-            url: '/getQuoteList',
+            url: '/api/getQuoteList',
         }).then(response => {
+            // console.log(response.data);
+            // debugPrintAttachments(response.data);
             setQuotes(response.data);
         });
     }, []);
@@ -29,7 +39,7 @@ const QuoteList = () => {
     };
 
     const formatQuoteJSX = (quote: QuoteType) => {
-        return (<Quote quote={quote} />);
+        return (<Quote quote={quote} key={quote.id} />);
     };
     
     return (

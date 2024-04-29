@@ -5,6 +5,7 @@ import Home from './home';
 import DiscordLogin from './DiscordLogin';
 import QuoteList from './QuoteList';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AuthProvider } from './AuthContext';
 // import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(
@@ -27,7 +28,9 @@ const router = createBrowserRouter([
 ]);
 
 root.render(
-  <RouterProvider router={router} />
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>
 );
 
 // // If you want to start measuring performance in your app, pass a function

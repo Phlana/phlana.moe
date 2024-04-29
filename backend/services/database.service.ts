@@ -14,5 +14,5 @@ export async function connectToDatabase() {
     const quotesCollection: mongoDB.Collection = db.collection(config.mongo_db_collection_name);
 
     collections.quotes = quotesCollection;
-    console.log(`successfully connected to database: ${db.databaseName} and collection ${quotesCollection.collectionName}`);
+    console.log(`successfully connected to:\ndatabase: ${db.databaseName}\ncollection: ${quotesCollection.collectionName}`);
 };
