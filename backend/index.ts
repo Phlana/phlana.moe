@@ -11,10 +11,10 @@ import { JsonWebTokenError, JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 const port = config.port || 8000;
 
 const isAuthorized: RequestHandler = async (req, res, next) => {
-    console.log(req.headers.authorization);
+    // console.log(req.headers.authorization);
     try {
         var result: JwtPayload = verifyToken(req.headers.authorization) as JwtPayload;
-        console.log(result);
+        // console.log(result);
         // check db for discord token
         var r = await collections.codes.findOne({code: result.code});
         // code not in database, invalid

@@ -31,5 +31,5 @@ export type Quote = {
     author: Author,
     attachments: Attachment[],
     embeds: Embed[],
-    id?: any
+    _id?: any
 };

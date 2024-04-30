@@ -103,7 +103,7 @@ export const refreshCDNLinks = async (quotes: Quote[]) => {
                 attachment.url = refreshMap.get(attachment.url);
 
     // console.debug(refreshMap);
-    console.info(`refreshed ${refreshMap.size} urls in ${numRequests} requests`);
+    // console.info(`refreshed ${refreshMap.size} urls in ${numRequests} requests`);
 
     return quotes;
 };
