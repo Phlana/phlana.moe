@@ -3,6 +3,8 @@ import axios from 'axios';
 import * as config from './config.json';
 import { getErrorMessage } from './util';
 import Quote from './models/quote';
+import { generateToken } from './jwt';
+import { collections } from './services/database.service';
 
 const router = express.Router();
 
@@ -21,11 +23,11 @@ router.get('/discordValidate', async (req, res) => {
         const response = await axios.post('https://discord.com/api/oauth2/token', params);
         const { access_token, token_type } = response.data;
         const headers = { Authorization: `${token_type} ${access_token}` };
-        console.log(headers);
+        // console.log(headers);
 
         // getting user information
         const userDataResponse = await axios.get('http://discord.com/api/users/@me', { headers });
-        console.log('fetched discord user information ', userDataResponse.data);
+        // console.log('fetched discord user information ', userDataResponse.data);
 
         // getting guild (server) status
         const guildDataResponse = await axios.get('https://discord.com/api/users/@me/guilds', { headers });
@@ -44,21 +46,24 @@ router.get('/discordValidate', async (req, res) => {
         // mising correct role, fail login
         if (!hasRole) throw new Error('missing correct role');
 
-        // TODO: setup jwt token authentication
-        var token = null;
         var username = userDataResponse.data.username;
         var avatar = `https://cdn.discordapp.com/avatars/${userDataResponse.data.id}/${userDataResponse.data.avatar}.png`;
-        // boolean if user is in the correct server and has correct role
-        var valid = !!guild && !!hasRole;
 
         // create json web token
-        // const
+        const token = generateToken(`${access_token}`);
 
-        return res.status(200).json({ token, username, avatar, valid, profile: guildRoleResponse.data });
+        // insert code into database if doesnt exist, update date if exists
+        collections.codes.updateOne(
+            { code: access_token },
+            { $set: { date: Date() } },
+            { upsert: true }
+        );
+
+        return res.status(200).json({ token, username, avatar, profile: guildRoleResponse.data });
     }
     catch (error: any) {
         console.error('unauthorized', getErrorMessage(error));
-        return res.status(401).json({ token: null, valid: false });
+        return res.status(401).json({ token: null });
     }
 });
 
@@ -66,7 +71,7 @@ router.get('/discordValidate', async (req, res) => {
 export const refreshCDNLinks = async (quotes: Quote[]) => {
     const refreshMap = new Map<string, string>();
     const urlsToRefresh = [];
-    var numRequests = 1;
+    var numRequests = 0;
 
     for (var quote of quotes) {
         for (var attachment of quote.attachments)
@@ -85,7 +90,10 @@ export const refreshCDNLinks = async (quotes: Quote[]) => {
         }
     }
     // final post for any remaining urls
-    await postRefresh(urlsToRefresh, refreshMap);
+    if (urlsToRefresh.length > 0) {
+        await postRefresh(urlsToRefresh, refreshMap);
+        numRequests++;
+    }
 
     // replace original urls with refreshed ones
     for (var q of quotes)
@@ -94,7 +102,7 @@ export const refreshCDNLinks = async (quotes: Quote[]) => {
             if (refreshMap.has(attachment.url))
                 attachment.url = refreshMap.get(attachment.url);
 
-    console.debug(refreshMap);
+    // console.debug(refreshMap);
     console.info(`refreshed ${refreshMap.size} urls in ${numRequests} requests`);
 
     return quotes;

@@ -6,19 +6,17 @@ import { AuthContext } from "./AuthContext";
 type UserInfoType = {
     username: string;
     avatar: string;
-    valid: boolean;
 };
 
 type DiscordValidationType = {
     token: string;
     username: string;
     avatar: string;
-    valid: boolean;
     profile: any;
 }
 
 const DiscordLogin = () => {
-    const { setToken } = useContext(AuthContext);
+    const { token, setToken } = useContext(AuthContext);
     const [searchParams, setSearchParams] = useSearchParams();
     const [code, setCode] = useState<string>();
     const [userInfo, setUserInfo] = useState<UserInfoType>();
@@ -32,11 +30,11 @@ const DiscordLogin = () => {
             method: 'get',
             url: '/api/discordValidate?code=' + responseCode,
         }).then(response => {
-            var { token, username, avatar, valid, profile } = response.data;
+            var { token, username, avatar, profile } = response.data;
             console.log(response.data);
-
-            setToken(token);            
-            setUserInfo({ username, avatar, valid });
+            localStorage.setItem('token', token);
+            setToken(token);
+            setUserInfo({ username, avatar });
             setProfile(profile);
         })
     }, []);
@@ -51,7 +49,7 @@ const DiscordLogin = () => {
                     hi { userInfo.username }
                 </div>
                 <div>
-                    { userInfo.valid ? "valid" : "invalid" }
+                    { token ? "valid" : "invalid" }
                 </div>
                 <div>
                     <Link to={"/quotelist"}>go to quote list</Link>

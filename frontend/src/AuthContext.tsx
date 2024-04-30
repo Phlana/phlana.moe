@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // TODO: set token on localstorage
         const storedToken = localStorage.getItem('token') ?? '';
         setToken(storedToken);
         setLoading(false);

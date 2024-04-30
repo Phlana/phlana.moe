@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Quote from './components/Quote';
 import { Quote as QuoteType } from './model/mongoTypes';
+import { sendRequest } from "./UseAxios";
 
 const QuoteList = () => {
     const [quotes, setQuotes] = useState<QuoteType[]>([]);
@@ -15,13 +16,13 @@ const QuoteList = () => {
     }
 
     useEffect(() => {
-        axios.request({
+        sendRequest<QuoteType[]>({
             method: 'get',
             url: '/api/getQuoteList',
-        }).then(response => {
-            // console.log(response.data);
-            // debugPrintAttachments(response.data);
-            setQuotes(response.data);
+        }, (data) => {
+            // console.log(data);
+            // debugPrintAttachments(data);
+            setQuotes(data);
         });
     }, []);
 
