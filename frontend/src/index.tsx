@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Home from './home';
+import Home from './Home';
 import DiscordLogin from './DiscordLogin';
 import QuoteList from './QuoteList';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';

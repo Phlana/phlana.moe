@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
-import './home.css';
+import './Home.css';
 
-const home = () => {
+const Home = () => {
     return (
         <div className='home page'>
             <div style={{ background: "#E0E0E0" }}>
@@ -20,4 +20,4 @@ const home = () => {
     );
 };
 
-export default home;
+export default Home;

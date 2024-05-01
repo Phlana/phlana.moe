@@ -1,13 +1,18 @@
-import { Button, Card } from 'react-bootstrap';
-import { Attachment, Quote as QuoteType } from '../model/mongoTypes';
+import { Button, Card, Col, Row } from 'react-bootstrap';
+import { Attachment, QuoteType } from '../model/mongoTypes';
 import config from '../config.json';
 import './Quote.css';
+import { sendRequest } from '../UseAxios';
 
 const Quote = ({quote}: {quote: QuoteType}) => {
     const displayAttachments = (quote: QuoteType) => {
         const attachments = [];
-        for (var attachment of quote.attachments)
-            attachments.push(displayAttachment(attachment));
+        for (var attachment of quote.attachments) {
+            if (attachments.length === 0)
+                attachments.push(<Row><Col>{ displayAttachment(attachment) }</Col></Row>);
+            else
+                attachments.push(<Row className='mt-3'><Col>{ displayAttachment(attachment) }</Col></Row>);
+        }
         return attachments;
     };
 
@@ -22,11 +27,11 @@ const Quote = ({quote}: {quote: QuoteType}) => {
 
         // audio attachment
         if (attachment.url.includes('.mp3'))
-            return <audio key={attachment.id} controls><source src={attachment.url} type='audio/mpeg'></source></audio>
+            return <audio key={attachment.id} controls><source src={attachment.url} type='audio/mpeg'></source></audio>;
         if (attachment.url.includes('.ogg'))
-            return <audio key={attachment.id} controls><source src={attachment.url} type='audio/ogg'></source></audio>
+            return <audio key={attachment.id} controls><source src={attachment.url} type='audio/ogg'></source></audio>;
         if (attachment.url.includes('.wav'))
-            return <audio key={attachment.id} controls><source src={attachment.url} type='audio/wav'></source></audio>
+            return <audio key={attachment.id} controls><source src={attachment.url} type='audio/wav'></source></audio>;
 
         // image attachment
         if (['.jpg', '.jpeg', '.png', '.gif', 'apng', 'avif', 'webp'].some(format => attachment.url.includes(format)))
@@ -44,13 +49,32 @@ const Quote = ({quote}: {quote: QuoteType}) => {
         return <a href={`discord:///channels/${config.discord_server_id}/${quote.channel_id}/${quote._id}`}>link to discord</a>;
     };
 
+    const formatDate = (date: Date): string => {
+        // TODO: display today and yesterday as such
+        return date.toDateString() + ' ' + date.toLocaleTimeString();
+    };
+
+    const onDelete = (quote: QuoteType) => {
+        sendRequest<void>({
+            method: 'post',
+            url: `/api/deleteQuote?id=${quote._id}`,
+        }, (response) => {
+            if (response.status === 200) {
+                console.log(`deleted quote with id: ${quote._id}`);
+            }
+            else {
+                console.log(`failed to delete quote with id: ${quote._id}`);
+            }
+        });
+    };
+
     return (
         <Card className='quote my-4' style={{ maxWidth: 800 }}>
             <Card.Header className='d-inline-flex'>
                 {/* <img src={`https://cdn.discordapp.com/avatars/${quote.author.id}/${quote.author.avatar}.png`} /> */}
-                <div className='me-3'>{quote.author.username}</div>
-                <div className='me-3 flex-grow-1'>{linkToDiscord(quote)}</div>
-                <div><Button variant='danger' size='sm'>delete</Button></div>
+                <div className='me-3'>{ quote.author.username }</div>
+                <div className='me-3 flex-grow-1'>{ linkToDiscord(quote) }</div>
+                <div><Button onClick={() => onDelete(quote)} variant='danger' size='sm'>delete</Button></div>
             </Card.Header>
             <Card.Body>
                 <div>
@@ -58,12 +82,12 @@ const Quote = ({quote}: {quote: QuoteType}) => {
                 </div>
                 { quote.attachments.length > 0 &&
                     <div className={ quote.content ? 'mt-3' : '' }>
-                        {displayAttachments(quote)}
+                        { displayAttachments(quote) }
                     </div>
                 }
             </Card.Body>
             <Card.Footer>
-                {quote.timestamp}
+                { formatDate(quote.timestamp) }
             </Card.Footer>
         </Card>
     );

@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'gg sans';
     src: local('gg sans'), url(../assets/gg\ sans\ Regular.ttf) format('truetype');
-};
+}
 
 .quote {
     &.card {
@@ -12,16 +12,16 @@
         .card-header {
             background-color: rgb(43, 45, 49);
             color: #ffffff;
-        };
+        }
 
         .card-body {
             background-color: rgb(49, 51, 56);
             color: rgb(219, 222, 225);
-        };
+        }
 
         .card-footer {
             background-color: rgb(43, 45, 49);
             color: #ffffff;
-        };
-    };
-};
+        }
+    }
+}

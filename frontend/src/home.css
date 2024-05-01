@@ -17,16 +17,16 @@
         background: linear-gradient(90deg, #5faa19 50%, #65209d 50%);
         display: flex;
         flex-direction: column;
-    };
+    }
 
     &.container {
         display: flex;
         flex: 1;
         background-color: #d0d6d7;
         max-width: 900px;
-    };
+    }
 
     &.title {
         font-size: 200px;
-    };
-};
+    }
+}

@@ -11,7 +11,7 @@ export default class Quote {
         public author: Author,
         public attachments: Attachment[],
         public embeds: Embed[],
-        public _id?: ObjectId
+        public _id: string
     ) {
         
     }

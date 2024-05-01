@@ -24,7 +24,7 @@ export type Embed = {
     color?: number,
 };
 
-export type Quote = {
+export type RawQuoteType = {
     channel_id: string,
     content: string,
     timestamp: string,
@@ -32,4 +32,14 @@ export type Quote = {
     attachments: Attachment[],
     embeds: Embed[],
     _id?: any
+};
+
+export type QuoteType = {
+    channel_id: string,
+    content: string,
+    timestamp: Date,
+    author: Author,
+    attachments: Attachment[],
+    embeds: Embed[],
+    _id: string
 };
