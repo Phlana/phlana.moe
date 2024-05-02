@@ -4,7 +4,7 @@ import config from '../config.json';
 import './Quote.css';
 import { sendRequest } from '../UseAxios';
 
-const Quote = ({quote}: {quote: QuoteType}) => {
+const Quote = ({quote, deleteQuote}: {quote: QuoteType, deleteQuote: (quote: QuoteType) => void}) => {
     const displayAttachments = (quote: QuoteType) => {
         const attachments = [];
         for (var attachment of quote.attachments) {
@@ -54,27 +54,14 @@ const Quote = ({quote}: {quote: QuoteType}) => {
         return date.toDateString() + ' ' + date.toLocaleTimeString();
     };
 
-    const onDelete = (quote: QuoteType) => {
-        sendRequest<void>({
-            method: 'post',
-            url: `/api/deleteQuote?id=${quote._id}`,
-        }, (response) => {
-            if (response.status === 200) {
-                console.log(`deleted quote with id: ${quote._id}`);
-            }
-            else {
-                console.log(`failed to delete quote with id: ${quote._id}`);
-            }
-        });
-    };
-
+    // TODO: custom emoji support?
     return (
         <Card className='quote my-4' style={{ maxWidth: 800 }}>
             <Card.Header className='d-inline-flex'>
                 {/* <img src={`https://cdn.discordapp.com/avatars/${quote.author.id}/${quote.author.avatar}.png`} /> */}
                 <div className='me-3'>{ quote.author.username }</div>
                 <div className='me-3 flex-grow-1'>{ linkToDiscord(quote) }</div>
-                <div><Button onClick={() => onDelete(quote)} variant='danger' size='sm'>delete</Button></div>
+                <div><Button onClick={() => deleteQuote(quote)} variant='danger' size='sm'>delete</Button></div>
             </Card.Header>
             <Card.Body>
                 <div>

@@ -1,12 +1,9 @@
-import { useEffect, useState, useContext } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import axios from "axios";
-import { AuthContext } from "./AuthContext";
-
-type UserInfoType = {
-    username: string;
-    avatar: string;
-};
+import { useEffect, useState, useContext } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
+import { AuthContext } from './AuthContext';
+import './DiscordLogin.css';
+import { Spinner } from 'react-bootstrap';
 
 type DiscordValidationType = {
     token: string;
@@ -16,10 +13,9 @@ type DiscordValidationType = {
 }
 
 const DiscordLogin = () => {
-    const { token, setToken } = useContext(AuthContext);
+    const { token, setToken, loading, userData, setUserData } = useContext(AuthContext);
     const [searchParams, setSearchParams] = useSearchParams();
     const [code, setCode] = useState<string>();
-    const [userInfo, setUserInfo] = useState<UserInfoType>();
     const [profile, setProfile] = useState<any>();
 
     useEffect(() => {
@@ -30,42 +26,34 @@ const DiscordLogin = () => {
             method: 'get',
             url: '/api/discordValidate?code=' + responseCode,
         }).then(response => {
-            var { token, username, avatar, profile } = response.data;
+            var { token: t, username, avatar, profile } = response.data;
             console.log(response.data);
-            localStorage.setItem('token', token);
-            setToken(token);
-            setUserInfo({ username, avatar });
+            localStorage.setItem('token', t);
+            setToken(t);
+            setUserData({ username, avatar });
             setProfile(profile);
         })
     }, []);
 
     return (
-        <div>
-            { userInfo && <div>
-                <div>
-                    <img src={userInfo.avatar}></img>
-                </div>
-                <div>
-                    hi { userInfo.username }
-                </div>
-                <div>
-                    { token ? "valid" : "invalid" }
-                </div>
-                <div>
-                    <Link to={"/quotelist"}>go to quote list</Link>
-                </div>
-                <div>
-                    <Link to={"/"}>home</Link>
-                </div>
+        <div className='login page justify-content-center align-items-center'>
+            {/* loading */}
+            { loading && <div className='center-text'>
+                <div className='mb-5'><Spinner /></div>
+                <div>logging in</div>
             </div> }
-            { !userInfo && <div>
-                <div>
-                    failed to log in
-                </div>
-                <div>
-                    <Link to={"/"}>home</Link>
-                </div>
-            </div>}
+            {/* success */}
+            { !loading && userData && <div className='center-text'>
+                <div className='mb-5'><img src={userData.avatar} style={{ borderRadius: '50%' }} /></div>
+                <div className='mb-3'>hi { userData.username }</div>
+                <div className='mb-3'><Link className='btn btn-primary' to={'/quotelist'}>go to quote list</Link></div>
+                <div><Link to={'/'}>back</Link></div>
+            </div> }
+            {/* failure */}
+            { !loading && !userData && <div className='center-text'>
+                <div className='mb-3'>failed to log in</div>
+                <div><Link to={'/'}>home</Link></div>
+            </div> }
         </div>
     );
 };

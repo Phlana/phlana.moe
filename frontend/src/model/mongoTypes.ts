@@ -25,21 +25,21 @@ export type Embed = {
 };
 
 export type RawQuoteType = {
-    channel_id: string,
-    content: string,
-    timestamp: string,
-    author: Author,
-    attachments: Attachment[],
-    embeds: Embed[],
-    _id?: any
+    channel_id: string;
+    content: string;
+    timestamp: string;
+    author: Author;
+    attachments: Attachment[];
+    embeds: Embed[];
+    _id: string;
 };
 
 export type QuoteType = {
-    channel_id: string,
-    content: string,
-    timestamp: Date,
-    author: Author,
-    attachments: Attachment[],
-    embeds: Embed[],
-    _id: string
+    channel_id: string;
+    content: string;
+    timestamp: Date;
+    author: Author;
+    attachments: Attachment[];
+    embeds: Embed[];
+    _id: string;
 };

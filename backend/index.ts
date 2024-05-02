@@ -7,29 +7,9 @@ import * as config from './config.json';
 import { collections, connectToDatabase } from './services/database.service';
 import { verifyToken } from './jwt';
 import { JsonWebTokenError, JwtPayload, TokenExpiredError } from 'jsonwebtoken';
+import { isAuthorized } from './util';
 
 const port = config.port || 8000;
-
-const isAuthorized: RequestHandler = async (req, res, next) => {
-    // console.log(req.headers.authorization);
-    try {
-        var result: JwtPayload = verifyToken(req.headers.authorization) as JwtPayload;
-        // console.log(result);
-        // check db for discord token
-        var r = await collections.codes.findOne({code: result.code});
-        // code not in database, invalid
-        if (!r) throw new JsonWebTokenError("token is not valid");
-    }
-    catch (error) {
-        if (error instanceof TokenExpiredError || error instanceof JsonWebTokenError) {
-            console.log("token invalid")
-            // token has expired, or invalid
-            return res.status(401).end();
-        }
-    }
-    
-    next();
-};
 
 const app = express();
 app.use(cors());

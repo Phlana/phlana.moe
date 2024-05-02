@@ -2,15 +2,22 @@ import { useEffect, useState } from "react";
 import Quote from './components/Quote';
 import { RawQuoteType, QuoteType } from './model/mongoTypes';
 import { sendRequest } from "./UseAxios";
-import { Container, Row, Col, FormSelect } from "react-bootstrap";
+import { Container, Row, Col, FormSelect, FormControl } from "react-bootstrap";
 import './QuoteList.css';
 
 const QuoteList = () => {
     const [quotes, setQuotes] = useState<QuoteType[]>([]);
     const [displayQuotes, setDisplayQuotes] = useState<QuoteType[]>(quotes);
-    const [authorFilter, setAuthorFilter] = useState<string>('all');
-    const [sortBy, setSortBy] = useState<string>('none');
     const [authors, setAuthors] = useState<string[]>([]);
+    const [searchFilter, setSearchFilter] = useState<string>('');
+    const [authorFilter, setAuthorFilter] = useState<string>('all');
+    const [attachmentFilter, setAttachmentFilter] = useState<string>('any');
+    const [fromFilter, setFromFilter] = useState<string>('');
+    const [toFilter, setToFilter] = useState<string>('');
+    const [sortBy, setSortBy] = useState<string>('');
+
+    useEffect(() => console.log(fromFilter), [fromFilter]);
+    useEffect(() => console.log(toFilter), [toFilter]);
 
     const debugPrintAttachments = (quotes: QuoteType[]) => {
         for (var quote of quotes)
@@ -29,56 +36,108 @@ const QuoteList = () => {
             var betterData = scrubData(response.data);
 
             setQuotes(betterData);
-            setDisplayQuotes(betterData);
             console.log('finished mapping data');
         });
     }, []);
 
-    const onAuthorFilter = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        filterAndSortQuotes(event.target.value, sortBy);
+    const applySearchFilter = (qs: QuoteType[]): QuoteType[] => {
+        if (searchFilter === '') return qs;
+        return qs.filter(q => q.content.toLowerCase().includes(searchFilter.toLowerCase()));
     };
 
-    const onSortBy = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        filterAndSortQuotes(authorFilter, event.target.value);
+    const applyAuthorFilter = (qs: QuoteType[]): QuoteType[] => {
+        if (authorFilter === 'all') return qs;
+        return qs.filter(q => q.author.username.toLowerCase() === authorFilter);
     };
 
-    const filterAndSortQuotes = (filter: string, sort: string) => {
-        // TODO: layered filters
-        if (filter !== authorFilter) {
-            console.log('filtering quotes');
-            if (filter === 'all')
-                setDisplayQuotes(quotes);
-            else
-                setDisplayQuotes(quotes.filter(q => q.author.username.toLowerCase() === filter));
-            
-            setAuthorFilter(filter);
+    const applyAttachmentFilter = (qs: QuoteType[]): QuoteType[] => {
+        switch (attachmentFilter) {
+            case 'none':
+                return qs.filter(q => q.attachments.length === 0);
+            case 'image':
+                return qs.filter(q => {
+                    return ['.jpg', '.jpeg', '.png', '.gif', 'apng', 'avif', 'webp'].some(format => {
+                        return q.attachments.some(attachment => attachment.url.includes(format));
+                    });
+                });
+            case 'video':
+                return qs.filter(q => {
+                    return ['.mp4', '.mov', '.webm', '.ogg'].some(format => {
+                        return q.attachments.some(attachment => attachment.url.includes(format));
+                    });
+                });
+            case 'audio':
+                return qs.filter(q => {
+                    return ['.mp3', '.ogg', '.wav'].some(format => {
+                        return q.attachments.some(attachment => attachment.url.includes(format));
+                    });
+                });
+            default:
+                return qs;
         }
-        // TODO: subsort
-        if (sort !== sortBy) {
-            console.log('sorting quotes');
-            var sortedQuotes: QuoteType[] = [];
-            if (sort === 'date') {
-                sortedQuotes = Array<QuoteType>().concat(quotes)
-                    .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-            }
-            else if (sort === 'author') {
-                sortedQuotes = Array<QuoteType>().concat(quotes)
-                    .sort((a, b) => a.author.username.toLowerCase().localeCompare(b.author.username.toLowerCase()));
-            }
+    };
 
-            setQuotes(sortedQuotes);
-            setSortBy(sort);
+    const applyFromFilter = (qs: QuoteType[]): QuoteType[] => {
+        if (!fromFilter) return qs;
+        return qs.filter(q => q.timestamp >= new Date(fromFilter));
+    };
+    
+    const applyToFilter = (qs: QuoteType[]): QuoteType[] => {
+        if (!toFilter) return qs;
+        // add one to filter for end of selected day
+        const toDate = new Date(toFilter);
+        toDate.setDate(toDate.getDate() + 1);
+        return qs.filter(q => q.timestamp <= toDate);
+    };
+
+    const applySortBy = (qs: QuoteType[]): QuoteType[] => {
+        switch (sortBy) {
+            case 'date':
+                return Array<QuoteType>().concat(qs).sort((a, b) => {
+                    return a.timestamp.getTime() - b.timestamp.getTime();
+                });
+            case 'author':
+                return Array<QuoteType>().concat(qs).sort((a, b) => {
+                    return a.author.username.toLowerCase().localeCompare(b.author.username.toLowerCase());
+                });
+            default:
+                return qs;
         }
     };
 
-    // sort was changed, reapply filter
+    const applyAllFiltersSort = () => {
+        const quotesCopy = new Array().concat(quotes);
+        const filteredSortedQuotes = 
+            applySortBy(
+            applySearchFilter(
+            applyAuthorFilter(
+            applyAttachmentFilter(
+            applyFromFilter(
+            applyToFilter(
+                quotesCopy
+            ))))));
+        setDisplayQuotes(filteredSortedQuotes);
+    };
+
     useEffect(() => {
-        console.log('filtering quotes second');
-        if (authorFilter === 'all')
-            setDisplayQuotes(quotes);
-        else
-            setDisplayQuotes(quotes.filter(q => q.author.username.toLowerCase() === authorFilter));
-    }, [sortBy]);
+        if (!quotes) return;
+        applyAllFiltersSort();
+    }, [quotes, searchFilter, authorFilter, attachmentFilter, fromFilter, toFilter, sortBy]);
+
+    const deleteQuote = (quote: QuoteType) => {
+        sendRequest<void>({
+            method: 'post',
+            url: `/api/deleteQuote?id=${quote._id}`,
+        }, (response) => {
+            if (response.status === 200) {
+                console.log(`deleted quote with id: ${quote._id}`);
+                setQuotes(quotes.filter(q => q._id !== quote._id));
+            }
+            else {
+                console.log(`failed to delete quote with id: ${quote._id}`);
+            }
+        });
+    };
 
     const scrubData = (data: RawQuoteType[]): QuoteType[] => {
         const cleanQuotes: QuoteType[] = [];
@@ -92,15 +151,9 @@ const QuoteList = () => {
 
             // clean up date string
             const cleanQuote: QuoteType = {
-                channel_id: q.channel_id,
-                content: q.content,
+                ...q,
                 timestamp: new Date(q.timestamp),
-                author: q.author,
-                attachments: q.attachments,
-                embeds: q.embeds,
-                _id: q._id
-            }
-
+            };
             cleanQuotes.push(cleanQuote);
         }
 
@@ -118,28 +171,42 @@ const QuoteList = () => {
     };
 
     const formatQuoteJSX = (quote: QuoteType) => {
-        return ( <Quote quote={quote} key={quote._id} /> );
+        return ( <Quote quote={quote} deleteQuote={deleteQuote} key={quote._id} /> );
     };
     
     return (
         <Row>
             <Col md style={{ maxWidth: 400, backgroundColor: 'rgb(43, 45, 49)', color: 'rgb(219, 222, 225)'}}>
                 <div className="sticky-top p-3">
-                    <div>
-                        <FormSelect onChange={onAuthorFilter} value={authorFilter}>
-                            { authors.map(p => <option value={p}>{p}</option>) }
+                    <div className="mb-3">
+                        search text:
+                        <FormControl onChange={e => setSearchFilter(e.target.value)} type="text" />
+                    </div>
+                    <div className="mb-3">
+                        author filter:
+                        <FormSelect onChange={e => setAuthorFilter(e.target.value)} value={authorFilter}>
+                            { authors.map(a => <option value={a}>{a}</option>) }
                         </FormSelect>
                     </div>
-                    <div>
-                        filtering to: { authorFilter }
-                    </div>
-                    <div>
-                        <FormSelect onChange={onSortBy} value={sortBy}>
-                            { ['none', 'date', 'author'].map(o => <option value={o}>{o}</option>) }
+                    <div className="mb-3">
+                        attachment filter:
+                        <FormSelect onChange={e => setAttachmentFilter(e.target.value)} value={attachmentFilter}>
+                            { ['any', 'none', 'image', 'video', 'audio'].map(a => <option value={a}>{a}</option>) }
                         </FormSelect>
                     </div>
-                    <div>
-                        sorting by: { sortBy }
+                    <div className="mb-3">
+                        from:
+                        <FormControl onChange={e => setFromFilter(e.target.value)} type="date" />
+                    </div>
+                    <div className="mb-3">
+                        to:
+                        <FormControl onChange={e => setToFilter(e.target.value)} type="date" />
+                    </div>
+                    <div className="mb-3">
+                        sort by:
+                        <FormSelect onChange={e => setSortBy(e.target.value)} value={sortBy}>
+                            { ['', 'date', 'author'].map(o => <option value={o}>{o}</option>) }
+                        </FormSelect>
                     </div>
                 </div>
             </Col>

@@ -1,10 +1,11 @@
 import express from 'express';
 import axios from 'axios';
 import * as config from './config.json';
-import { getErrorMessage } from './util';
+import { getErrorMessage, isAuthorized } from './util';
 import Quote from './models/quote';
-import { generateToken } from './jwt';
+import { generateToken, verifyToken } from './jwt';
 import { collections } from './services/database.service';
+import { JwtPayload } from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -46,8 +47,8 @@ router.get('/discordValidate', async (req, res) => {
         // mising correct role, fail login
         if (!hasRole) throw new Error('missing correct role');
 
-        var username = userDataResponse.data.username;
-        var avatar = `https://cdn.discordapp.com/avatars/${userDataResponse.data.id}/${userDataResponse.data.avatar}.png`;
+        const username = userDataResponse.data.username;
+        const avatar = `https://cdn.discordapp.com/avatars/${userDataResponse.data.id}/${userDataResponse.data.avatar}.png`;
 
         // create json web token
         const token = generateToken(`${access_token}`);
@@ -65,6 +66,16 @@ router.get('/discordValidate', async (req, res) => {
         console.error('unauthorized', getErrorMessage(error));
         return res.status(401).json({ token: null });
     }
+});
+
+router.get('/discordInfo', isAuthorized, async (req, res) => {
+    const result: JwtPayload = verifyToken(req.headers.authorization) as JwtPayload;
+
+    const headers = { Authorization: `Bearer ${result.code}` };
+    const userDataResponse = await axios.get('http://discord.com/api/users/@me', { headers });
+
+    const username = userDataResponse.data.username;
+    const avatar = `https://cdn.discordapp.com/avatars/${userDataResponse.data.id}/${userDataResponse.data.avatar}.png`;
 });
 
 // a function to refresh all attachments
