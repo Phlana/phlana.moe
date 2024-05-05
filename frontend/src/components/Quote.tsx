@@ -55,6 +55,7 @@ const Quote = ({quote, deleteQuote}: {quote: QuoteType, deleteQuote: (quote: Quo
     };
 
     // TODO: custom emoji support?
+    // TODO: confirmation on delete
     return (
         <Card className='quote my-4' style={{ maxWidth: 800 }}>
             <Card.Header className='d-inline-flex'>
