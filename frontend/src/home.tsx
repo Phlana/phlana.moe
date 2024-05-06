@@ -7,7 +7,7 @@ const Home = () => {
     return (
         <div className='home page'>
             <div style={{ background: "#E0E0E0" }}>
-                <Link to="https://discord.com/oauth2/authorize?client_id=1230024072096776213&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fdiscord&scope=guilds+identify+guilds.members.read">
+                <Link to="https://discord.com/oauth2/authorize?client_id=1230024072096776213&response_type=code&redirect_uri=http%3A%2F%2Fphlana.moe%2Fauth%2Fdiscord&scope=guilds+identify+guilds.members.read">
                     <img src="/discord.webp" style={{ width: 48 }} />
                 </Link>
             </div>
