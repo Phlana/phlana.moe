@@ -18,6 +18,8 @@ const DiscordLogin = () => {
     const [code, setCode] = useState<string>();
     const [profile, setProfile] = useState<any>();
 
+    useEffect(() => console.log(loading), [loading]);
+
     useEffect(() => {
         if (code) return;
         const responseCode = searchParams.get('code') || '';
@@ -32,28 +34,37 @@ const DiscordLogin = () => {
             setToken(t);
             setUserData({ username, avatar });
             setProfile(profile);
-        })
+        }).catch((reason) => {
+            console.log('could not validate', reason);
+            setUserData({ username: '', avatar: '' });
+        });
     }, []);
 
     return (
         <div className='login page justify-content-center align-items-center'>
             {/* loading */}
-            { loading && <div className='center-text'>
-                <div className='mb-5'><Spinner /></div>
-                <div>logging in</div>
-            </div> }
+            { loading && (
+                <div className='center-text'>
+                    <div className='mb-5'><Spinner /></div>
+                    <div>logging in</div>
+                </div>
+            )}
             {/* success */}
-            { !loading && userData && <div className='center-text'>
-                <div className='mb-5'><img src={userData.avatar} style={{ borderRadius: '50%' }} /></div>
-                <div className='mb-3'>hi { userData.username }</div>
-                <div className='mb-3'><Link className='btn btn-primary' to={'/quotelist'}>go to quote list</Link></div>
-                <div><Link to={'/'}>back</Link></div>
-            </div> }
+            { !loading && userData.username && userData.avatar && (
+                <div className='center-text'>
+                    <div className='mb-5'><img src={userData.avatar} style={{ borderRadius: '50%' }} /></div>
+                    <div className='mb-3'>hi { userData.username }</div>
+                    <div className='mb-3'><Link className='btn btn-primary' to={'/quotelist'}>go to quote list</Link></div>
+                    <div><Link to={'/'}>back</Link></div>
+                </div> 
+            )}
             {/* failure */}
-            { !loading && !userData && <div className='center-text'>
-                <div className='mb-3'>failed to log in</div>
-                <div><Link to={'/'}>home</Link></div>
-            </div> }
+            { !loading && !(userData.username || userData.avatar) && (
+                <div className='center-text'>
+                    <div className='mb-3'>failed to log in</div>
+                    <div><Link to={'/'}>home</Link></div>
+                </div> 
+            )}
         </div>
     );
 };

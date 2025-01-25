@@ -1,5 +1,5 @@
 {
-  "homepage": "https://Phlana.github.io/phlana.moe",
+  "homepage": "https://phlana.moe/#",
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
@@ -23,10 +23,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "start": "react-scripts start",
+    "deploy": "npm run build && echo phlana.moe > ./build/CNAME && gh-pages -d build",
+
     "build": "react-scripts build",
+    "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

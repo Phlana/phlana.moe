@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import DiscordLogin from './DiscordLogin';
+import Home from './Home';
+import QuoteList from './QuoteList';
+import TestPage from './TestPage';
 
-function App() {
+// const router = createHashRouter([
+//   {
+//     path: "/",
+//     element: <Home />,
+//   },
+//   {
+//     path: "/auth/discord",
+//     element: <DiscordLogin />,
+//   },
+//   {
+//     path: "/quotelist",
+//     element: <QuoteList />,
+//   },
+// ]);
+
+// const App = () => {
+//   return <RouterProvider router={router} />
+// };
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="/auth/discord"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          discord login
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path='/' element={ <Home /> } />
+      <Route path='/auth/discord' element={ <DiscordLogin /> } />
+      <Route path='/quotelist' element={ <QuoteList /> } />
+      <Route path='/test' element={ <TestPage content='test' /> } />
+      <Route path='*' element={ <TestPage content='catch' /> } />
+    </Routes>
   );
-}
+};
 
 export default App;
