@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/phlana.moe/static/css/main.4e38fea4.css",
+    "main.js": "/phlana.moe/static/js/main.c2b89421.js",
+    "static/media/gg sans Regular.ttf": "/phlana.moe/static/media/gg sans Regular.5e3cb65b9a804d263414.ttf",
+    "index.html": "/phlana.moe/index.html",
+    "main.4e38fea4.css.map": "/phlana.moe/static/css/main.4e38fea4.css.map",
+    "main.c2b89421.js.map": "/phlana.moe/static/js/main.c2b89421.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4e38fea4.css",
+    "static/js/main.c2b89421.js"
+  ]
+}
