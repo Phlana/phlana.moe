@@ -2,12 +2,13 @@ import { Link } from 'react-router-dom';
 import { Container, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import './Home.css';
+import { url } from './Constants';
 
 const Home = () => {
     return (
         <div className='home page'>
             <div style={{ background: "#E0E0E0" }}>
-                <Link to="https://discord.com/oauth2/authorize?client_id=1230024072096776213&response_type=code&redirect_uri=https%3A%2F%2Fphlana.moe%2Fauth%2Fdiscord&scope=guilds+identify+guilds.members.read">
+                <Link to={`https://discord.com/oauth2/authorize?client_id=1230024072096776213&response_type=code&redirect_uri=${url}%2Fauth%2Fdiscord&scope=guilds+identify+guilds.members.read`}>
                     <img src="/discord.webp" style={{ width: 48 }} />
                 </Link>
             </div>
