@@ -1,7 +1,26 @@
-import React from "react"
+import axios from "axios";
+import React, { useEffect } from "react"
 import { Link } from "react-router-dom";
 
 const TestPage = ({ content }: { content: string }) => {
+
+    useEffect(() => {
+        // try connecting to backend
+        axios({
+            method: 'get',
+            url: 'http://75.158.147.208/8000'
+        }).then(response => {
+            console.log('http://75.158.147.208/8000', response);
+        });
+
+        axios({
+            method: 'get',
+            url: 'https://75.158.147.208/8000'
+        }).then(response => {
+            console.log('https://75.158.147.208/8000', response);
+        });
+    }, []);
+    
     return (
         <React.Fragment>
             <div className='center-text'>
