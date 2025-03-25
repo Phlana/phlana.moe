@@ -38,6 +38,23 @@ const DiscordLogin = () => {
             console.log('could not validate', reason);
             setUserData({ username: '', avatar: '' });
         });
+
+        useEffect(() => {
+            // try connecting to backend
+            axios({
+                method: 'get',
+                url: 'http://75.158.147.208/8000'
+            }).then(response => {
+                console.log('http://75.158.147.208/8000', response);
+            });
+    
+            axios({
+                method: 'get',
+                url: 'https://75.158.147.208/8000'
+            }).then(response => {
+                console.log('https://75.158.147.208/8000', response);
+            });
+        }, []);
     }, []);
 
     return (
