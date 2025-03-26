@@ -56,7 +56,54 @@ const TestPage = ({ content }: { content: string }) => {
         });
 
         axios({
-            method: 'get',
+            url: 'https://75.158.147.208/'
+        }).then(response => {
+            console.log('https://75.158.147.208/', response);
+        });
+
+        axios({
+            url: 'http://75.158.147.208/8000'
+        }).then(response => {
+            console.log('http://75.158.147.208/8000', response);
+        });
+
+        axios({
+            url: 'https://75.158.147.208/8000'
+        }).then(response => {
+            console.log('https://75.158.147.208/8000', response);
+        });
+
+        axios({
+            url: 'http://75.158.147.208'
+        }).then(response => {
+            console.log('http://75.158.147.208', response);
+        });
+
+        axios({
+            url: 'https://75.158.147.208'
+        }).then(response => {
+            console.log('https://75.158.147.208', response);
+        });
+
+        axios({
+            url: 'http://75.158.147.208/8000/'
+        }).then(response => {
+            console.log('http://75.158.147.208/8000/', response);
+        });
+
+        axios({
+            url: 'https://75.158.147.208/8000/'
+        }).then(response => {
+            console.log('https://75.158.147.208/8000/', response);
+        });
+
+        axios({
+            url: 'http://75.158.147.208/'
+        }).then(response => {
+            console.log('http://75.158.147.208/', response);
+        });
+
+        axios({
             url: 'https://75.158.147.208/'
         }).then(response => {
             console.log('https://75.158.147.208/', response);
