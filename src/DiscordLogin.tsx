@@ -22,9 +22,15 @@ const DiscordLogin = () => {
     useEffect(() => console.log(loading), [loading]);
 
     useEffect(() => {
-        console.log(searchParams);
-        const responseCode = searchParams.get('code') || '';
-        console.log(responseCode);
+        const searchString = window.location.search;
+        const urlParams = new URLSearchParams(searchString);
+        const responseCode = urlParams.get('code') || '';
+        console.log('searchString', searchString);
+        console.log('urlParams', urlParams);
+
+        // console.log(searchParams);
+        // const responseCode = searchParams.get('code') || '';
+        console.log('responseCode', responseCode);
         if (responseCode) setCode(responseCode);
     }, [searchParams]);
 
