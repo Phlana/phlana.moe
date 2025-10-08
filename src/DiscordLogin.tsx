@@ -16,21 +16,24 @@ type DiscordValidationType = {
 const DiscordLogin = () => {
     const { token, setToken, loading, userData, setUserData } = useContext(AuthContext);
     const [searchParams, setSearchParams] = useSearchParams();
-    const [code, setCode] = useState<string>();
+    const [code, setCode] = useState<string>('');
     const [profile, setProfile] = useState<any>();
 
     useEffect(() => console.log(loading), [loading]);
 
     useEffect(() => {
-        if (code) return;
         console.log(searchParams);
         const responseCode = searchParams.get('code') || '';
-        setCode(responseCode);
         console.log(responseCode);
+        if (responseCode) setCode(responseCode);
+    }, [searchParams]);
+
+    useEffect(() => {
+        if (!code) return;
 
         axios<DiscordValidationType>({
             method: 'get',
-            url: apiUrl + '/api/discordValidate?code=' + responseCode,
+            url: apiUrl + '/api/discordValidate?code=' + code,
         }).then(response => {
             var { token: t, username, avatar, profile } = response.data;
             console.log(response.data);
@@ -42,7 +45,7 @@ const DiscordLogin = () => {
             console.log('could not validate', reason);
             setUserData({ username: '', avatar: '' });
         });
-    }, []);
+    }, [code]);
 
     return (
         <div className='login page justify-content-center align-items-center'>
