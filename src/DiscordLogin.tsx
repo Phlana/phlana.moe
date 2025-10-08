@@ -4,6 +4,7 @@ import axios from 'axios';
 import { AuthContext } from './AuthContext';
 import './DiscordLogin.css';
 import { Spinner } from 'react-bootstrap';
+import { apiUrl } from './Constants';
 
 type DiscordValidationType = {
     token: string;
@@ -26,7 +27,7 @@ const DiscordLogin = () => {
         setCode(responseCode);
         axios<DiscordValidationType>({
             method: 'get',
-            url: '/api/discordValidate?code=' + responseCode,
+            url: apiUrl + '/api/discordValidate?code=' + responseCode,
         }).then(response => {
             var { token: t, username, avatar, profile } = response.data;
             console.log(response.data);

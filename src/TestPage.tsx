@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react"
 import { Link } from "react-router-dom";
+import { apiUrl } from "./Constants";
 
 const TestPage = ({ content }: { content: string }) => {
 
@@ -8,9 +9,9 @@ const TestPage = ({ content }: { content: string }) => {
         // try connecting to backend
         axios({
             method: 'get',
-            url: 'http://api.phlana.moe'
+            url: apiUrl
         }).then(response => {
-            console.log('http://api.phlana.moe', response);
+            console.log(apiUrl, response);
         });
     }, []);
 

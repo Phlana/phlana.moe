@@ -4,6 +4,7 @@ import { RawQuoteType, QuoteType } from './model/mongoTypes';
 import { sendRequest } from "./UseAxios";
 import { Container, Row, Col, FormSelect, FormControl } from "react-bootstrap";
 import './QuoteList.css';
+import { apiUrl } from "./Constants";
 
 const QuoteList = () => {
     const [quotes, setQuotes] = useState<QuoteType[]>([]);
@@ -28,7 +29,7 @@ const QuoteList = () => {
     useEffect(() => {
         sendRequest<RawQuoteType[]>({
             method: 'get',
-            url: '/api/getQuoteList',
+            url: apiUrl + '/api/getQuoteList',
         }, (response) => {
             console.log('received quote list data');
             // console.log(response.data);
@@ -127,7 +128,7 @@ const QuoteList = () => {
     const deleteQuote = (quote: QuoteType) => {
         sendRequest<void>({
             method: 'post',
-            url: `/api/deleteQuote?id=${quote._id}`,
+            url: apiUrl + `/api/deleteQuote?id=${quote._id}`,
         }, (response) => {
             if (response.status === 200) {
                 console.log(`deleted quote with id: ${quote._id}`);
