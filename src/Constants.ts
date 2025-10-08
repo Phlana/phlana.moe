@@ -17,9 +17,9 @@ export const url = (() => {
 export const apiUrl = (() => {
     switch (process.env.NODE_ENV) {
         case 'development':
-            return prodApiUrl;
-        case 'production':
             return devApiUrl;
+        case 'production':
+            return prodApiUrl;
         default:
             return '';
     };
