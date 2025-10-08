@@ -1,4 +1,4 @@
-const prodUrl = 'https://phlana.moe';
+const prodUrl = 'https://api.phlana.moe';
 const devUrl = 'http://localhost:3000';
 
 export const url = (() => {
