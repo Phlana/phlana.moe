@@ -23,8 +23,11 @@ const DiscordLogin = () => {
 
     useEffect(() => {
         if (code) return;
+        console.log(searchParams);
         const responseCode = searchParams.get('code') || '';
         setCode(responseCode);
+        console.log(responseCode);
+
         axios<DiscordValidationType>({
             method: 'get',
             url: apiUrl + '/api/discordValidate?code=' + responseCode,
