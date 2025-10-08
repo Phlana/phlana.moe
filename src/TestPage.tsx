@@ -13,6 +13,27 @@ const TestPage = ({ content }: { content: string }) => {
         }).then(response => {
             console.log(apiUrl, response);
         });
+
+        axios({
+            method: 'get',
+            url: apiUrl + '/api'
+        }).then(response => {
+            console.log(apiUrl + '/api', response);
+        });
+
+        axios({
+            method: 'get',
+            url: apiUrl + '/api/discordValidate'
+        }).then(response => {
+            console.log(apiUrl + '/api/discordValidate', response);
+        });
+
+        axios({
+            method: 'get',
+            url: apiUrl + '/discordValidate'
+        }).then(response => {
+            console.log(apiUrl + '/discordValidate', response);
+        });
     }, []);
 
     return (
