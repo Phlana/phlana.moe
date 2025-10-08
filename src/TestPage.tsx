@@ -8,105 +8,105 @@ const TestPage = ({ content }: { content: string }) => {
         // try connecting to backend
         axios({
             method: 'get',
-            url: 'http://75.158.147.208/8000'
+            url: 'http://api.phlana.moe/8000'
         }).then(response => {
-            console.log('http://75.158.147.208/8000', response);
+            console.log('http://api.phlana.moe/8000', response);
         });
 
         axios({
             method: 'get',
-            url: 'https://75.158.147.208/8000'
+            url: 'https://api.phlana.moe/8000'
         }).then(response => {
-            console.log('https://75.158.147.208/8000', response);
+            console.log('https://api.phlana.moe/8000', response);
         });
 
         axios({
             method: 'get',
-            url: 'http://75.158.147.208'
+            url: 'http://api.phlana.moe'
         }).then(response => {
-            console.log('http://75.158.147.208', response);
+            console.log('http://api.phlana.moe', response);
         });
 
         axios({
             method: 'get',
-            url: 'https://75.158.147.208'
+            url: 'https://api.phlana.moe'
         }).then(response => {
-            console.log('https://75.158.147.208', response);
+            console.log('https://api.phlana.moe', response);
         });
 
         axios({
             method: 'get',
-            url: 'http://75.158.147.208/8000/'
+            url: 'http://api.phlana.moe/8000/'
         }).then(response => {
-            console.log('http://75.158.147.208/8000/', response);
+            console.log('http://api.phlana.moe/8000/', response);
         });
 
         axios({
             method: 'get',
-            url: 'https://75.158.147.208/8000/'
+            url: 'https://api.phlana.moe/8000/'
         }).then(response => {
-            console.log('https://75.158.147.208/8000/', response);
+            console.log('https://api.phlana.moe/8000/', response);
         });
 
         axios({
             method: 'get',
-            url: 'http://75.158.147.208/'
+            url: 'http://api.phlana.moe/'
         }).then(response => {
-            console.log('http://75.158.147.208/', response);
+            console.log('http://api.phlana.moe/', response);
         });
 
         axios({
-            url: 'https://75.158.147.208/'
+            url: 'https://api.phlana.moe/'
         }).then(response => {
-            console.log('https://75.158.147.208/', response);
+            console.log('https://api.phlana.moe/', response);
         });
 
         axios({
-            url: 'http://75.158.147.208/8000'
+            url: 'http://api.phlana.moe/8000'
         }).then(response => {
-            console.log('http://75.158.147.208/8000', response);
+            console.log('http://api.phlana.moe/8000', response);
         });
 
         axios({
-            url: 'https://75.158.147.208/8000'
+            url: 'https://api.phlana.moe/8000'
         }).then(response => {
-            console.log('https://75.158.147.208/8000', response);
+            console.log('https://api.phlana.moe/8000', response);
         });
 
         axios({
-            url: 'http://75.158.147.208'
+            url: 'http://api.phlana.moe'
         }).then(response => {
-            console.log('http://75.158.147.208', response);
+            console.log('http://api.phlana.moe', response);
         });
 
         axios({
-            url: 'https://75.158.147.208'
+            url: 'https://api.phlana.moe'
         }).then(response => {
-            console.log('https://75.158.147.208', response);
+            console.log('https://api.phlana.moe', response);
         });
 
         axios({
-            url: 'http://75.158.147.208/8000/'
+            url: 'http://api.phlana.moe/8000/'
         }).then(response => {
-            console.log('http://75.158.147.208/8000/', response);
+            console.log('http://api.phlana.moe/8000/', response);
         });
 
         axios({
-            url: 'https://75.158.147.208/8000/'
+            url: 'https://api.phlana.moe/8000/'
         }).then(response => {
-            console.log('https://75.158.147.208/8000/', response);
+            console.log('https://api.phlana.moe/8000/', response);
         });
 
         axios({
-            url: 'http://75.158.147.208/'
+            url: 'http://api.phlana.moe/'
         }).then(response => {
-            console.log('http://75.158.147.208/', response);
+            console.log('http://api.phlana.moe/', response);
         });
 
         axios({
-            url: 'https://75.158.147.208/'
+            url: 'https://api.phlana.moe/'
         }).then(response => {
-            console.log('https://75.158.147.208/', response);
+            console.log('https://api.phlana.moe/', response);
         });
     }, []);
 
